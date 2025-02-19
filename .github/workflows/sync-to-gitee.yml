@@ -20,13 +20,15 @@ jobs:
       
     - name: Sync to Gitee
       env:
+        GITEE_REPO_URL: "https://gitee.com/tazy/tazy-tools.git"
+        GITEE_USERNAME: "tazy"
         GITEE_PASSWORD: ${{ secrets.GITEE_TOKEN }} # 使用Gitee个人访问令牌更安全
       run: |
         git config --global user.name "番薯有才"
         git config --global user.email "tazytan@qq.com"
 
         # 添加Gitee远程仓库
-        git remote add gitee "https://gitee.com/tazy/tazy-tools.git"
+        git remote add gitee "${GITEE_REPO_URL}"
 
         # 获取所有远程分支和标签
         git fetch --all
