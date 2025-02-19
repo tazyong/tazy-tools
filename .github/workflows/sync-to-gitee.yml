@@ -1,0 +1,26 @@
+name: Sync to Gitee
+on:
+  push:
+    branches: []          # 触发分支（所有分支）
+  workflow_dispatch:      # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 拉取完整历史（含所有分支）
+
+      - name: Mirror to Gitee
+        uses: wearerequired/git-mirror-action@v1
+        with:
+          # 源仓库（GitHub）
+          source-repo: "git@github.com:${{ github.repository }}.git"
+          # 目标仓库（Gitee）
+          destination-repo: "https://${{ secrets.GITEE_USERNAME }}:${{ secrets.GITEE_TOKEN }}@gitee.com/tazy/tazy-tools.git"
+          # 同步所有分支
+          refs: "refs/heads/*"
+          # 强制推送（覆盖历史，慎用）
+          force: true
