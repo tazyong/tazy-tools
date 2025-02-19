@@ -8,14 +8,6 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout GitHub Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # 拉取完整历史（含所有分支）
-
-      - name: Configure Git Safe Directory
-        run: git config --global --add safe.directory /github/workspace
-
       - name: Mirror to Gitee
         uses: wearerequired/git-mirror-action@v1
         env:
