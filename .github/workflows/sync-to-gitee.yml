@@ -13,6 +13,20 @@ jobs:
         with:
           fetch-depth: 0  # 拉取完整历史（含所有分支）
 
+      - name: Configure Git Safe Directory
+        run: git config --global --add safe.directory /github/workspace
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+          # 调试命令：测试GitHub连接
+          ssh -Tv git@github.com
+
       - name: Mirror to Gitee
         uses: wearerequired/git-mirror-action@v1
         env:
