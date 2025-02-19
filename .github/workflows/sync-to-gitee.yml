@@ -16,21 +16,11 @@ jobs:
       - name: Configure Git Safe Directory
         run: git config --global --add safe.directory /github/workspace
 
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
-          # 调试命令：测试GitHub连接
-          ssh -Tv git@github.com
-
       - name: Mirror to Gitee
         uses: wearerequired/git-mirror-action@v1
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         with:
           # 源仓库（GitHub）
           source-repo: "git@github.com:${{ github.repository }}.git"
