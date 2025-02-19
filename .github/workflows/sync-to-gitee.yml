@@ -25,4 +25,4 @@ jobs:
           # 源仓库（GitHub）
           source-repo: "git@github.com:${{ github.repository }}.git"
           # 目标仓库（Gitee）
-          destination-repo: "git@gitee.com/tazy/tazy-tools.git"
+          destination-repo: "git@gitee.com:tazy/tazy-tools.git"
