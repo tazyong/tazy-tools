@@ -1,20 +1,43 @@
 name: Sync to Gitee
+
 on:
   push:
-    branches: []          # 触发分支（所有分支）
-  workflow_dispatch:      # 允许手动触发
+    branches:
+      - '**' # 监听所有分支的变化
+  create:
+    tags:
+      - '*' # 监听所有tag的创建
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Mirror to Gitee
-        uses: wearerequired/git-mirror-action@master
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-        with:
-          # 源仓库（GitHub）
-          source-repo: "git@github.com:${{ github.repository }}.git"
-          # 目标仓库（Gitee）
-          destination-repo: "git@gitee.com:tazy/tazy-tools.git"
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # 获取所有历史记录，包括所有分支和标签
+      
+    - name: Sync to Gitee
+      env:
+        GITEE_PASSWORD: ${{ secrets.GITEE_TOKEN }} # 使用Gitee个人访问令牌更安全
+      run: |
+        git config --global user.name "番薯有才"
+        git config --global user.email "tazytan@qq.com"
+
+        # 添加Gitee远程仓库
+        git remote add gitee "https://gitee.com/tazy/tazy-tools.git"
+
+        # 获取所有远程分支和标签
+        git fetch --all
+
+        # 推送所有分支
+        for branch in $(git branch -r | grep origin | grep -v HEAD ); do
+          git checkout ${branch#origin/}
+          git push gitee ${branch#origin/}:${branch#origin/} --force
+        done
+
+        # 推送所有标签
+        for tag in $(git tag); do
+          git push gitee tag $tag --force
+        done
